@@ -1,2 +1,5 @@
 .python-version
 .vscode/
+clutrr-repo/
+.ipynb_checkpoints/
+__pycache__/
