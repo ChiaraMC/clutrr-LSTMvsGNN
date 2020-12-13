@@ -14,19 +14,23 @@ Story = List[Fact]
 
 
 class Dictionary:
+    '''
+    A dictionary to convert entities/predicates to indices and vice versa
+    
+    Argument:
+        triples: triples from which to extract all entities/predicates
+                used to build the dictionary
+    '''
     def __init__(self,
-                 triples: List[Triple]):
-        
-        entities = {s for (s, _, _) in triples} | {o for (_, _, o) in triples}
-        predicates = {p for (_, p, _) in triples}
+                 data):
         
         # Entities dic
-        self.entity2idx = {entity: idx for idx, entity in enumerate(sorted(entities))}
+        self.entity2idx = {entity: idx for idx, entity in enumerate(data.entity_lst)}
         self.idx2entity = {idx: entity for entity, idx in self.entity2idx.items()}
         self.num_entities = len(self.entity2idx)
         
         # Predicate dic
-        self.predicate2idx = {predicate: idx for idx, predicate in enumerate(sorted(predicates))}
+        self.predicate2idx = {predicate: idx for idx, predicate in enumerate(data.relation_lst)}
         self.idx2predicate = {idx: predicate for predicate, idx in self.predicate2idx.items()}
         self.num_predicates = len(self.predicate2idx)
         
@@ -89,7 +93,7 @@ class Data:
                 assert s in self.entity_lst and o in self.entity_lst
                 assert r in self.relation_lst
                 
-        self._all_triples = self.get_all_triples()
+        # self._all_triples = self.get_all_triples()
 
     @property
     def train(self) -> List[Instance]:
@@ -99,9 +103,9 @@ class Data:
     def test(self) -> Dict[str, List[Instance]]:
         return self._test_instances
     
-    @property
-    def all_triples(self) -> List[Triple]:
-        return self._all_triples
+    # @property
+    # def all_triples(self) -> List[Triple]:
+    #     return self._all_triples
 
     @staticmethod
     def _to_obj(s: str) -> Any:
@@ -126,15 +130,21 @@ class Data:
         return res
     
     
-    def get_all_triples(self):
-        triples = []
+    # def get_all_triples(self):
+    #     '''
+    #     Extract all the triples present in the data (in stories/targets, train/test)
+    #     '''
+    #     triples = []
         
-        for i in range(len(self.train)):
-            triples += self.train[i].story
-            triples += [self.train[i].target]
+    #     for i in range(len(self.train)):
+    #         triples += self.train[i].story
+    #         triples += [self.train[i].target]
         
-        for i in range(len(self.test)):
-            triples += self.test[i].story
-            triples += [self.test[i].target]
+    #     for i in range(len(self.test)):
+    #         triples += self.test[i].story
+    #         triples += [self.test[i].target]
 
-        return triples
+    #     return triples
+    
+def triples_to_indices(triples):
+    pass
