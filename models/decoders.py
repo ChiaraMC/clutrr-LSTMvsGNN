@@ -27,13 +27,15 @@ class DecoderLSTM(nn.Module):
                 entities: Tensor,
                 encoder_output: Tensor):
         
+        num_batches, _, _ = entities.shape
+        
         ### Create embeddings
         embed = self.entity_embeddings(entities)
-        embed = embed.view(1, -1, self.embed_size)
+        embed = embed.view(num_batches, -1, self.embed_size)
 
         ### Pass through LSTM decoder - NOT SURE ABOUT THIS ARC
         _, (out, _) = self.lstm(embed, encoder_output)
-        num_batches, _, hidden_size = out.shape
+        _, _, hidden_size = out.shape
         out = out.reshape(num_batches, hidden_size)
         out = self.linear(out)
         

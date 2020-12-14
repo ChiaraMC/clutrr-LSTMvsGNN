@@ -11,6 +11,8 @@ class EncoderLSTM(nn.Module):
         self.hidden_size = hidden_size
         self.entity_embeddings = entity_embeddings
         self.relation_embeddings = relation_embeddings
+        self.entity_embeddings.requires_grad = False
+        self.relation_embeddings.requires_grad = False
         
         self.embed_size = self.entity_embeddings.weight.shape[1]
         assert self.embed_size == self.relation_embeddings.weight.shape[1]
@@ -30,8 +32,9 @@ class EncoderLSTM(nn.Module):
         
         ### Create embeddings
         # Separete entities and relations, embed them, and put them back together
-        entities = story[:,:2]
-        relations = story[:,2].view(-1, 1)
+        batches, story_len, _ = story.shape
+        entities = story[:,:,:2]
+        relations = story[:,:,2].view(batches, 1, -1)
         
         # Embed them
         ent_embed = self.entity_embeddings(entities)
@@ -39,7 +42,7 @@ class EncoderLSTM(nn.Module):
         
         # Put them back together and flatten in a (1, embed_size) tensor
         embed = torch.cat((ent_embed, rel_embed), dim=1)
-        embed = embed.view(1, -1, self.embed_size)
+        embed = embed.view(batches, -1, self.embed_size)
 
         ### Pass through LSTM encoder
         # Manual way 

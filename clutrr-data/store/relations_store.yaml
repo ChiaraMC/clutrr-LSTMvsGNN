@@ -161,7 +161,7 @@ un:
       e_2 is e_1's nephew
     ]
   female:
-    rel: neice
+    rel: niece
     p: [
       e_2 is the niece of e_1,
       e_2 is e_1's niece
