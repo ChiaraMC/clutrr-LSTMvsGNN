@@ -2,13 +2,11 @@ import time
 
 import torch
 import torch.nn as nn
-from torch import nn, optim, Tensor
-import torch.nn.functional as F
 
-import numpy as np
 from typing import List, Tuple, Any, Optional, Dict
 
-from training.data import Instance, Data, Dictionary, triples_to_indices
+from data.raw_data import Instance, Data
+from data.data_utils import Dictionary, triples_to_indices
 
 class CLUTRRdata(torch.utils.data.Dataset):
     '''

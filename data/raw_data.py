@@ -15,29 +15,6 @@ from typing import List, Tuple, Any, Optional, Dict
 Triple = Fact = Tuple[str, str, str]
 Story = List[Fact]
 
-
-class Dictionary:
-    '''
-    A dictionary to convert entities/predicates to indices and vice versa
-    
-    Argument:
-        triples: triples from which to extract all entities/predicates
-                used to build the dictionary
-    '''
-    def __init__(self,
-                 data):
-        
-        # Entities dic
-        self.entity2idx = {entity: idx for idx, entity in enumerate(data.entity_lst)}
-        self.idx2entity = {idx: entity for entity, idx in self.entity2idx.items()}
-        self.num_entities = len(self.entity2idx)
-        
-        # Predicate dic
-        self.relation2idx = {relation: idx for idx, relation in enumerate(data.relation_lst)}
-        self.idx2relation = {idx: relation for relation, idx in self.relation2idx.items()}
-        self.num_relations = len(self.relation2idx)
-        
-
 class Instance:
     def __init__(self,
                  story: Story,
@@ -65,11 +42,11 @@ class Instance:
 
 class Data:
     def __init__(self,
-                 train_path: str = 'clutrr-data/data_089907f8/1.2,1.3_train.csv',
+                 train_path: str = 'data/clutrr-data/data_089907f8/1.2,1.3_train.csv',
                  test_paths: Optional[List[str]] = None):
 
         # Open the relations file and set up a series of lists/dicts containing types of relationships
-        with open('clutrr-data/store/relations_store.yaml', 'r') as f:
+        with open('data/clutrr-data/store/relations_store.yaml', 'r') as f:
             rs = yaml.safe_load(f)
 
         self.relation_to_predicate = {r['rel']: k for k, v in rs.items()
@@ -148,14 +125,3 @@ class Data:
     #         triples += [self.test[i].target]
 
     #     return triples
-    
-# Need to figure out whether to return one tensor or split it in two
-def triples_to_indices(dictionary, triples):
-    
-    indices = np.array([[dictionary.entity2idx[s], dictionary.entity2idx[o], dictionary.relation2idx[r]] for s, r, o in triples])
-    indices = torch.tensor(indices, dtype=torch.long)
-    
-    entities_indices = indices[:,:2]
-    relation_indices = indices[:,2]
-
-    return indices, entities_indices, relation_indices
