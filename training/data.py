@@ -5,6 +5,9 @@ import csv
 import yaml
 import json
 
+import numpy as np
+import torch
+
 from collections import OrderedDict
 
 from typing import List, Tuple, Any, Optional, Dict
@@ -30,9 +33,9 @@ class Dictionary:
         self.num_entities = len(self.entity2idx)
         
         # Predicate dic
-        self.predicate2idx = {predicate: idx for idx, predicate in enumerate(data.relation_lst)}
-        self.idx2predicate = {idx: predicate for predicate, idx in self.predicate2idx.items()}
-        self.num_predicates = len(self.predicate2idx)
+        self.relation2idx = {relation: idx for idx, relation in enumerate(data.relation_lst)}
+        self.idx2relation = {idx: relation for relation, idx in self.relation2idx.items()}
+        self.num_relations = len(self.relation2idx)
         
 
 class Instance:
@@ -146,5 +149,13 @@ class Data:
 
     #     return triples
     
-def triples_to_indices(triples):
-    pass
+# Need to figure out whether to return one tensor or split it in two
+def triples_to_indices(dictionary, triples):
+    
+    indices = np.array([[dictionary.entity2idx[s], dictionary.entity2idx[o], dictionary.relation2idx[r]] for s, r, o in triples])
+    indices = torch.tensor(indices, dtype=torch.long)
+    
+    entities_indices = indices[:,:2]
+    relation_indices = indices[:,2]
+
+    return indices, entities_indices, relation_indices
