@@ -43,11 +43,11 @@ class EncoderLSTM(nn.Module):
 
         ### Pass through LSTM encoder
         # Manual way 
-        # out = self.lstm(embed, None)
+        _, out = self.lstm(embed, None)
         # out = out[0][:,-1,:] # Get only last hidden layer
         
         # Using allennlp    
-        out = self.encoder(embed, None)
+        #out = self.encoder(embed, None)
         
         return out
     
