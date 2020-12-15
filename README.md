@@ -1,5 +1,3 @@
-# Clutrr LSTM vs GNN
-
 ## Progress log
 
 ### 10-14 Dec
@@ -10,3 +8,5 @@
 ### 15 Dec
 - Handle stories of varying lengths
 - Fix data bug
+
+#### test
