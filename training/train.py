@@ -9,7 +9,7 @@ import numpy as np
 from typing import List, Tuple, Any, Optional, Dict
 
 from data.raw_data import Instance, Data
-from data.data_utils import Dictionary, triples_to_indices
+from data.data_utils import Dictionary, triples_to_indices, collate
 from models.encoders import EncoderLSTM
 from models.decoders import DecoderLSTM
 
@@ -22,13 +22,15 @@ def train(encoder, decoder, train_data, test_data, epochs, learning_rate):
     encoder_optimizer = optim.Adam(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.Adam(decoder.parameters(), lr=learning_rate)
     
-    batch_size = 5
+    batch_size = 20
     trainloader = DataLoader(dataset = train_data,
                         batch_size = batch_size,
-                        shuffle = True)
+                        shuffle = True,
+                        collate_fn=collate)
     testloader = DataLoader(dataset = test_data,
                         batch_size = batch_size,
-                        shuffle = True)
+                        shuffle = True,
+                        collate_fn=collate)
     
     for epoch in range(epochs):
         encoder.train()

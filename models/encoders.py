@@ -5,6 +5,13 @@ from allennlp.modules.seq2vec_encoders import PytorchSeq2VecWrapper
 
 from typing import List, Tuple, Any, Optional, Dict
 
+import torch
+import torch.nn as nn
+from torch import nn, optim, Tensor
+from allennlp.modules.seq2vec_encoders import PytorchSeq2VecWrapper
+
+from typing import List, Tuple, Any, Optional, Dict
+
 class EncoderLSTM(nn.Module):
     def __init__(self, hidden_size, entity_embeddings, relation_embeddings):
         super(EncoderLSTM, self).__init__()
@@ -34,14 +41,16 @@ class EncoderLSTM(nn.Module):
         # Separete entities and relations, embed them, and put them back together
         batches, story_len, _ = story.shape
         entities = story[:,:,:2]
-        relations = story[:,:,2].view(batches, 1, -1)
+        relations = story[:,:,2]
         
         # Embed them
         ent_embed = self.entity_embeddings(entities)
-        rel_embed = self.relation_embeddings(relations)
+        rel_embed = self.relation_embeddings(relations).view(batches, story_len, -1, self.embed_size)
         
         # Put them back together and flatten in a (1, embed_size) tensor
-        embed = torch.cat((ent_embed, rel_embed), dim=1)
+        #print(ent_embed.shape)
+        #print(rel_embed.shape)
+        embed = torch.cat((ent_embed, rel_embed), dim=2)
         embed = embed.view(batches, -1, self.embed_size)
 
         ### Pass through LSTM encoder

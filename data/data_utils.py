@@ -41,3 +41,48 @@ def triples_to_indices(dictionary, triples):
     relation_indices = indices[:,2]
 
     return indices, entities_indices, relation_indices
+
+def collate(batch):
+    '''
+    Pad stories and batch data
+    '''
+    
+    batch_size = len(batch)
+
+    # Find longest story
+    max_story_length = 0
+    for i, data in enumerate(batch):
+        if data["story"].shape[0] > max_story_length:
+            max_story_length = data["story"].shape[0]
+           
+    # Collect and stories 
+    stories = []
+    for i, instance in enumerate(batch):
+        story_length = instance['story'].shape[0]
+        
+        if story_length < max_story_length:
+            padding_length = max_story_length - story_length
+            padding = torch.zeros((padding_length, 3), dtype=torch.int)
+            padded_story = torch.cat((instance['story'], padding), dim=0)
+        
+            stories.append(padded_story)
+        else:
+            stories.append(instance['story'])
+    
+    # Collect queries and targets
+    queries = [instance['query'] for instance in batch]
+    targets = [instance['target'] for instance in batch]
+    
+    # Create batch
+    batch_stories = torch.stack(stories, dim=0)
+    batch_queries = torch.stack(queries, dim=0)
+    batch_targets = torch.stack(targets, dim=0)
+    
+    batch = {
+        'story': batch_stories,
+        'query': batch_queries,
+        'target': batch_targets
+    }
+    
+
+    return batch
