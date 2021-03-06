@@ -61,9 +61,11 @@ class Data:
         self._train_instances = Data.parse(train_path)
         entity_set = {s for i in self.train for (s, _, _) in i.story} | {o for i in self.train for (_, _, o) in i.story}
 
-        self._test_instances = OrderedDict()
+        #self._test_instances = OrderedDict()
+        self._test_instances = []
         for test_path in (test_paths if test_paths is not None else []):
-            i_lst = self._test_instances[test_path] = Data.parse(test_path)
+            i_lst = Data.parse(test_path)
+            self._test_instances.extend(i_lst)
             entity_set |= {s for i in i_lst for (s, _, _) in i.story} | {o for i in i_lst for (_, _, o) in i.story}
 
         self.entity_lst = sorted(entity_set)

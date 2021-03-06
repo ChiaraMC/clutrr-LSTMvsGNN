@@ -21,6 +21,8 @@ class DecoderLSTM(nn.Module):
                             batch_first = True,
                             bidirectional = False)
         
+        self.decoder = PytorchSeq2VecWrapper(self.lstm)
+        
         self.linear = nn.Linear(self.hidden_size, self.num_relations)
 
     def forward(self,
@@ -35,8 +37,8 @@ class DecoderLSTM(nn.Module):
 
         ### Pass through LSTM decoder - NOT SURE ABOUT THIS ARC
         _, (out, _) = self.lstm(embed, encoder_output)
-        _, _, hidden_size = out.shape
-        out = out.reshape(num_batches, hidden_size)
+        num_directions, batch, hidden_size = out.shape
+        out = out.reshape(num_batches, hidden_size*num_directions)
         out = self.linear(out)
         
         return out

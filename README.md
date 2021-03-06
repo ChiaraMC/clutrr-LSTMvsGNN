@@ -8,3 +8,6 @@
 ### 15 Dec
 - Handle stories of varying lengths
 - Fix data bug
+
+### 6 March 2021
+- Fixing a bunch of small things

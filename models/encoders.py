@@ -37,11 +37,13 @@ class EncoderLSTM(nn.Module):
                 story: Tensor,
                 hidden):
         
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
         ### Create embeddings
         # Separete entities and relations, embed them, and put them back together
         batches, story_len, _ = story.shape
-        entities = story[:,:,:2]
-        relations = story[:,:,2]
+        entities = story[:,:,:2].to(device)
+        relations = story[:,:,2].to(device)
         
         # Embed them
         ent_embed = self.entity_embeddings(entities)
