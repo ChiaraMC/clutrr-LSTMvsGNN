@@ -11,3 +11,4 @@
 
 ### 6 March 2021
 - Fixing a bunch of small things
+- Note: LSTM model gives great results, but NOT if using bidrectional
