@@ -117,7 +117,6 @@ def predict_raw(instance, encoder, decoder, dictionary):
     
     print(f'Target: {instance.target}')
     print(f'Predicted relation: {pred}')
-    return
 
 def evaluate(encoder, decoder, testloader, loss_function):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
